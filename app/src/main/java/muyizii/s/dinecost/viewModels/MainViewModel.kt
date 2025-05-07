@@ -59,15 +59,10 @@ class MainViewModel(
                 Log.d("MainViewModel", "首次运行")
                 Log.d("MainViewModel", "MainViewModel已被初始化")
             } else {
-                val totalIn = databaseHelper.getFirstDateIn()!!.amount.roundToDecimal(2)
-                val totalOut = databaseHelper.getFirstDateOut()!!.amount.roundToDecimal(2)
-
                 val today = LocalDate.now()
 
                 _uiState.update { currentState ->
                     currentState.copy(
-                        totalIn = totalIn,
-                        totalOut = totalOut,
                         chosenDate = today,
                         nowDate = today
                     )
@@ -197,16 +192,15 @@ class MainViewModel(
     // 生成新的总记录
     fun generateTotalInOut() {
         viewModelScope.launch {
-            val newTotalIn = databaseHelper.getFirstDateIn()!!.amount
-            val newTotalOut = databaseHelper.getFirstDateOut()!!.amount
+            val newTotalIn = databaseHelper.getFirstDateIn()
+            val newTotalOut = databaseHelper.getFirstDateOut()
             val todayOutRecord = databaseHelper.getDateOutByDate(LocalDate.now())
-            val newTodayOut = if (todayOutRecord == null) 0.0 else todayOutRecord.amount
 
             _uiState.update { currentState ->
                 currentState.copy(
-                    totalIn = newTotalIn.roundToDecimal(2),
-                    totalOut = newTotalOut.roundToDecimal(2),
-                    todayOut = newTodayOut.roundToDecimal(2)
+                    totalIn = (newTotalIn?.amount ?: 0.0).roundToDecimal(2),
+                    totalOut = (newTotalOut?.amount ?: 0.0).roundToDecimal(2),
+                    todayOut = (todayOutRecord?.amount ?: 0.0).roundToDecimal(2)
                 )
             }
             sendOngoingNotification()

@@ -1,5 +1,6 @@
 package muyizii.s.dinecost
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -49,10 +50,13 @@ fun MainNavigation(
     )
 
     LaunchedEffect(refreshTrigger) {
-        mainViewModel.generateCalendarDays()
-        mainViewModel.generateTotalInOut()
-        mainViewModel.generateDetailRecordList()
-        mainViewModel.generateRecordTypeList()
+        if (refreshTrigger > 1) {
+            Log.d("MainNavigation", "调用了mainviewmodel的页面数据获取方法")
+            mainViewModel.generateCalendarDays()
+            mainViewModel.generateTotalInOut()
+            mainViewModel.generateDetailRecordList()
+            mainViewModel.generateRecordTypeList()
+        }
     }
 
     Scaffold(
