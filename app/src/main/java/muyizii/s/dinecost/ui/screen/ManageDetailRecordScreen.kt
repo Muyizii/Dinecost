@@ -54,7 +54,7 @@ fun ManageDetailRecordScreen(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(150.dp)
+                        .height(200.dp)
                         .padding(16.dp),
                     shape = RoundedCornerShape(12.dp),
                     color = if (mainUiState.chosenDetailRecord.isIncome) MaterialTheme.colorScheme.primary
@@ -64,6 +64,16 @@ fun ManageDetailRecordScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(0.85f)
+                        ) {
+                            Text(text = "日期")
+                            Text(
+                                text = mainUiState.chosenDetailRecord.date.toString()
+                            )
+                        }
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
@@ -81,6 +91,14 @@ fun ManageDetailRecordScreen(
                         ) {
                             Text(text = "类型")
                             Text(text = mainUiState.chosenDetailRecord.type)
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(0.85f)
+                        ) {
+                            Text(text = "子类型")
+                            Text(text = mainUiState.chosenDetailRecord.subType)
                         }
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,

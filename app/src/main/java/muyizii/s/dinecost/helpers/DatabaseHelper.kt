@@ -159,7 +159,7 @@ class DatabaseHelper(
                 amount = (if (isAdd) firstDateOut.amount + amount else firstDateOut.amount - amount).roundToDecimal(2)
             )
         )
-        Log.d("DatabaseHelper", "修改了总的支出数据" + if(isAdd) "增加$amount" else "减少$amount")
+        Log.d("DatabaseHelper", "修改了总的支出数据" + if (isAdd) "增加$amount" else "减少$amount")
     }
 
     private suspend fun updateFirstDateIn(isAdd: Boolean, amount: Double) {
@@ -238,6 +238,22 @@ class DatabaseHelper(
         Log.d("DatabaseHelper", "读取了DetailRecord表中所有日期为" + date + "的数据")
     }
 
+    suspend fun checkHasPatchByDate(date: LocalDate): Boolean {
+        val detailRecordDate = detailRecordRepository.getDetailRecordByDate(date)
+        for (i in detailRecordDate) {
+            if (i.isPatch) {
+                Log.d("DatabaseHelper", "判断日期" + date + "存在自动记账未分类的数据")
+                return true
+            }
+        }
+        Log.d("DatabaseHelper", "判断日期" + date + "不存在自动记账未分类的数据")
+        return false
+    }
+
+    suspend fun getAllDetailRecord(): List<DetailRecord>{
+        return detailRecordRepository.getAllDetailRecord()
+    }
+
     suspend fun getDetailRecordById(id: Int): DetailRecord? {
         return detailRecordRepository.getDetailRecordById(id)
     }
@@ -278,7 +294,7 @@ class DatabaseHelper(
             Log.d("DatabaseHelper", "更新详细记录导致的日收支更新，旧记录是收入，新记录是支出")
             updateDateInByDateMinus(oldDetailRecord.date, oldDetailRecord.amount)
             updateDateOutByDateAdd(newDetailRecord.date, newDetailRecord.amount)
-        } else if(!oldDetailRecord.isIncome && newDetailRecord.isIncome) {
+        } else if (!oldDetailRecord.isIncome && newDetailRecord.isIncome) {
             Log.d("DatabaseHelper", "更新详细记录导致的日收支更新，旧记录是支出，新记录是收入")
             updateDateOutByDateMinus(oldDetailRecord.date, oldDetailRecord.amount)
             updateDateInByDateAdd(newDetailRecord.date, newDetailRecord.amount)

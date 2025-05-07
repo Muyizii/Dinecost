@@ -28,6 +28,7 @@ data class MainUiState(
     val monthList: List<LocalDate> = emptyList(),
     val calendarDays: List<CalendarDays> = emptyList(),  // 提供日历界面所需的数据
     val detailRecordList: List<DetailRecord> = emptyList(), // 提供详细记录界面所需的数据
+    val allDetailRecordList: List<DetailRecord> = emptyList(), //所有的详细记录
     val recordTypeInList: List<RecordType> = emptyList(),
     val recordTypeOutList: List<RecordType> = emptyList()
 )
@@ -57,5 +58,6 @@ data class CalendarDays(
     val date: LocalDate,
     val price: Double,
     val isCurrentMonth: Boolean,
-    val isToday: Boolean
+    val isToday: Boolean,
+    val hasPatch: Boolean = false
 )

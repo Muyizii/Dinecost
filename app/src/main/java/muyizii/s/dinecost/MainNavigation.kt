@@ -7,6 +7,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,6 +20,7 @@ import androidx.navigation.navDeepLink
 import muyizii.s.dinecost.ui.screen.AboutScreen
 import muyizii.s.dinecost.ui.screen.AddDetailRecordScreen
 import muyizii.s.dinecost.ui.screen.AddRecordTypeScreen
+import muyizii.s.dinecost.ui.screen.AllDetailRecordListScreen
 import muyizii.s.dinecost.ui.screen.AutoRecorderManageScreen
 import muyizii.s.dinecost.ui.screen.CalendarScreen
 import muyizii.s.dinecost.ui.screen.DetailRecordListScreen
@@ -34,6 +36,7 @@ import muyizii.s.dinecost.viewModels.SettingViewModel
 
 @Composable
 fun MainNavigation(
+    refreshTrigger: Int = 0,
     mainViewModel: MainViewModel = viewModel(factory = AppViewModelProvider.MVMFactory),
     settingViewModel: SettingViewModel = viewModel(factory = AppViewModelProvider.SVMFactory),
 ) {
@@ -44,6 +47,13 @@ fun MainNavigation(
         "SHOW_AUTO_RECORDER_MODE_SMS_INFO_SCREEN",
         "ABOUT_SCREEN"
     )
+
+    LaunchedEffect(refreshTrigger) {
+        mainViewModel.generateCalendarDays()
+        mainViewModel.generateTotalInOut()
+        mainViewModel.generateDetailRecordList()
+        mainViewModel.generateRecordTypeList()
+    }
 
     Scaffold(
         bottomBar = {
@@ -78,6 +88,12 @@ fun MainNavigation(
                 )
             ) {
                 DetailRecordListScreen(
+                    mainViewModel = mainViewModel,
+                    navController = navController
+                )
+            }
+            composable("ALL_DETAIL_RECORD_LIST_SCREEN"){
+                AllDetailRecordListScreen(
                     mainViewModel = mainViewModel,
                     navController = navController
                 )

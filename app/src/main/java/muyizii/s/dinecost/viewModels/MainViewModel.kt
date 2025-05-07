@@ -34,9 +34,6 @@ class MainViewModel(
 
     val settingState: StateFlow<SettingState> = settingHelper.settingState
 
-    val totalInFlow = databaseHelper.getFirstDateInFlow()
-    val totalOutFlow = databaseHelper.getFirstDateOutFlow()
-
     init {
         viewModelScope.launch {
             if (checkFirstRun()) {
@@ -93,46 +90,6 @@ class MainViewModel(
                         sendOngoingNotification()
                     }
                 }
-
-
-            totalInFlow
-                .stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5000),
-                    initialValue = null
-                )
-                .collect { totalIn ->
-                if (totalIn != null) {
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            totalIn = totalIn.amount.roundToDecimal(2)
-                        )
-                    }
-                    sendOngoingNotification()
-                    Log.d("MainViewModel", "总收入流接受到了新的有效数字")
-                }
-            }
-
-            totalOutFlow
-                .stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5000),
-                    initialValue = null
-                )
-                .collect { totalOut ->
-                    if (totalOut != null) {
-                        val todayOut = databaseHelper.getDateOutByDate(LocalDate.now())
-                        _uiState.update { currentState ->
-                            currentState.copy(
-                                totalOut = totalOut.amount.roundToDecimal(2),
-                                todayOut = todayOut?.amount ?: 0.0
-                            )
-                        }
-
-                        sendOngoingNotification()
-                        Log.d("MainViewModel", "总支出流接受到了新的有效数字")
-                    }
-                }
         }
     }
 
@@ -183,7 +140,8 @@ class MainViewModel(
                         date = iDate,
                         price = if (tempPrice != null) tempPrice.amount.roundToDecimal(2) else 0.0,
                         isCurrentMonth = iDate.month == uiState.value.chosenDate.month,
-                        isToday = iDate == uiState.value.nowDate
+                        isToday = iDate == uiState.value.nowDate,
+                        hasPatch = databaseHelper.checkHasPatchByDate(iDate)
                     )
                 )
                 iDate = iDate.plusDays(1)
@@ -252,6 +210,21 @@ class MainViewModel(
                 )
             }
             sendOngoingNotification()
+        }
+    }
+
+    // 生成所有的记录
+    fun generateAllDetailRecordList(onComplete: () -> Unit){
+        viewModelScope.launch {
+            val newAllDetailRecordList = databaseHelper.getAllDetailRecord()
+
+            _uiState.update { currentState ->
+                currentState.copy(
+                    allDetailRecordList = newAllDetailRecordList
+                )
+            }
+            Log.d("MainViewModel", "所有详细记录读取了" + newAllDetailRecordList.size.toString() + "条")
+            onComplete()
         }
     }
 

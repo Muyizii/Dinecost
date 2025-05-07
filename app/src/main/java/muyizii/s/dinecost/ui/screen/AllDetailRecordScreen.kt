@@ -1,8 +1,6 @@
 package muyizii.s.dinecost.ui.screen
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,8 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,14 +17,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import muyizii.s.dinecost.R
 import muyizii.s.dinecost.viewModels.MainViewModel
 
 @Composable
-fun DetailRecordListScreen(
+fun AllDetailRecordListScreen(
     mainViewModel: MainViewModel,
     navController: NavHostController
 ) {
@@ -44,38 +38,8 @@ fun DetailRecordListScreen(
         ) {
             Text(
                 modifier = Modifier.padding(20.dp),
-                text = mainUiState.chosenDate.year.toString() + "年" +
-                        mainUiState.chosenDate.monthValue.toString() + "月" +
-                        mainUiState.chosenDate.dayOfMonth.toString() + "日",
+                text = "所有记录",
                 style = MaterialTheme.typography.titleLarge
-            )
-        }
-        Row(
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Text(
-                text = if (mainUiState.chosenDate == mainUiState.nowDate) {
-                    if (mainUiState.detailRecordList.isNotEmpty())
-                        "今日共有" + mainUiState.detailRecordList.size.toString() + "条记录"
-                    else
-                        "今日暂无记录"
-                } else {
-                    if (mainUiState.detailRecordList.isNotEmpty())
-                        "该日共有" + mainUiState.detailRecordList.size.toString() + "条记录"
-                    else
-                        "该日暂无记录"
-                },
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Text(
-                text = "（点此查看所有记录）",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.clickable {
-                    mainViewModel.generateAllDetailRecordList {
-                        navController.navigate("ALL_DETAIL_RECORD_LIST_SCREEN")
-                    }
-                }
             )
         }
         LazyColumn(
@@ -83,13 +47,13 @@ fun DetailRecordListScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             content = {
-                items(mainUiState.detailRecordList.size) { index ->
-                    val detailRecord = mainUiState.detailRecordList[index]
+                items(mainUiState.allDetailRecordList.size) { index ->
+                    val detailRecord = mainUiState.allDetailRecordList[index]
                     Surface(
                         modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .padding(10.dp)
-                            .height(100.dp),
+                            .fillMaxWidth(0.85f)
+                            .padding(6.dp)
+                            .height(40.dp),
                         shape = RoundedCornerShape(12.dp),
                         color =
                             if (detailRecord.isPatch)
@@ -103,32 +67,24 @@ fun DetailRecordListScreen(
                             navController.navigate("MANAGE_DETAIL_RECORD_SCREEN")
                         }
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxSize()
                         ) {
+                            Text(
+                                modifier = Modifier.padding(start = 8.dp),
+                                text = if (detailRecord.isIncome) "收入" else "支出"
+                            )
                             Text(text = detailRecord.amount.toString())
-                            Text(text = detailRecord.type)
-                            Text(text = if (detailRecord.isIncome) "收入" else "支出")
+                            Text(
+                                modifier = Modifier.padding(end = 8.dp),
+                                text = detailRecord.type
+                            )
                         }
                     }
                 }
             }
         )
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(24.dp),
-            onClick = { navController.navigate("ADD_DETAIL_RECORD_SCREEN") },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_add),
-                contentDescription = "添加"
-            )
-        }
     }
 }

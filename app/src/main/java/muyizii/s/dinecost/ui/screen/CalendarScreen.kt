@@ -138,7 +138,16 @@ fun CalendarScreen(
                     if (day.isCurrentMonth) {
                         Surface(
                             modifier =
-                                if (day.date == mainUiState.nowDate) {
+                                if (day.hasPatch) {
+                                    Modifier
+                                        .padding(2.dp)
+                                        .height(64.dp)
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.error,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                } else if (day.date == mainUiState.nowDate) {
                                     Modifier
                                         .padding(2.dp)
                                         .height(64.dp)
