@@ -2,7 +2,6 @@ package muyizii.s.dinecost.ui.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,20 +10,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import muyizii.s.dinecost.R
 import muyizii.s.dinecost.viewModels.MainViewModel
 
 @Composable
@@ -33,6 +31,10 @@ fun DetailRecordListScreen(
     navController: NavHostController
 ) {
     val mainUiState by mainViewModel.uiState.collectAsState()
+
+    // 使用 remember 保持防抖状态
+    var lastEventTime by remember { mutableLongStateOf(0L) }
+    val debounceInterval = 1000L // 防抖间隔
 
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -72,8 +74,12 @@ fun DetailRecordListScreen(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.clickable {
-                    mainViewModel.generateAllDetailRecordList {
-                        navController.navigate("ALL_DETAIL_RECORD_LIST_SCREEN")
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - lastEventTime >= debounceInterval) {
+                        lastEventTime = currentTime
+                        mainViewModel.generateAllDetailRecordList {
+                            navController.navigate("ALL_DETAIL_RECORD_LIST_SCREEN")
+                        }
                     }
                 }
             )
@@ -99,8 +105,12 @@ fun DetailRecordListScreen(
                             else
                                 MaterialTheme.colorScheme.secondary,
                         onClick = {
-                            mainViewModel.chooseAnotherDetailRecord(detailRecord.id)
-                            navController.navigate("MANAGE_DETAIL_RECORD_SCREEN")
+                            val currentTime = System.currentTimeMillis()
+                            if (currentTime - lastEventTime >= debounceInterval) {
+                                lastEventTime = currentTime
+                                mainViewModel.chooseAnotherDetailRecord(detailRecord.id)
+                                navController.navigate("MANAGE_DETAIL_RECORD_SCREEN")
+                            }
                         }
                     ) {
                         Column(
@@ -116,19 +126,5 @@ fun DetailRecordListScreen(
                 }
             }
         )
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(24.dp),
-            onClick = { navController.navigate("ADD_DETAIL_RECORD_SCREEN") },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_add),
-                contentDescription = "添加"
-            )
-        }
     }
 }

@@ -31,6 +31,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import muyizii.s.dinecost.R
+import muyizii.s.dinecost.Routes
 import muyizii.s.dinecost.viewModels.SettingViewModel
 
 @Composable
@@ -79,11 +80,10 @@ fun SettingScreen(
                         Text(
                             text = "通知",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
-                        Spacer(modifier = Modifier.padding(10.dp))
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().height(64.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -128,15 +128,15 @@ fun SettingScreen(
                                 }
                             )
                         }
-                        Spacer(modifier = Modifier.padding(10.dp))
+
                         Text(
                             text = "数据",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
-                        Spacer(modifier = Modifier.padding(10.dp))
+
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -149,19 +149,15 @@ fun SettingScreen(
                                 }
                             ) { Text(text = "重置") }
                         }
-                        Spacer(modifier = Modifier.padding(10.dp))
-
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth().height(56.dp)
+                                .clickable { navController.navigate(Routes.AUTO_RECORDER_MANAGE) },
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "自动记账模式"
-                            )
-                            Row(
-                                modifier = Modifier.clickable { navController.navigate("AUTO_RECORDER_MANAGE_SCREEN") }
-                            ) {
+                            Text(text = "自动记账模式")
+                            Row(modifier = Modifier) {
                                 Text(
                                     text = when (settingState.autoRecorderMode) {
                                         "None" -> "无"
@@ -177,18 +173,16 @@ fun SettingScreen(
                             }
                         }
 
-                        Spacer(modifier = Modifier.padding(10.dp))
-
                         Text(
                             text = "其它",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
 
-                        Spacer(modifier = Modifier.padding(10.dp))
-
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth().height(56.dp)
+                                .clickable { navController.navigate(Routes.ABOUT) },
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -198,7 +192,6 @@ fun SettingScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_arrow_right),
                                 contentDescription = "进入",
-                                modifier = Modifier.clickable { navController.navigate("ABOUT_SCREEN") }
                             )
                         }
                     }
@@ -244,10 +237,19 @@ fun SettingScreen(
                 shape = RoundedCornerShape(16.dp),
             ) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                 ) {
-                    Spacer(Modifier.height(16.dp))
-                    Text("数据库操作中。请勿离开此页面。")
+                    Text(
+                        text = "数据库操作中",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Text(
+                        text = "请勿离开此页面",
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 }
             }
         }

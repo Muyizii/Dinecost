@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import muyizii.s.dinecost.Routes
 import muyizii.s.dinecost.viewModels.MainViewModel
 
 @Composable
@@ -139,7 +140,7 @@ fun ManageDetailRecordScreen(
                     Button(
                         onClick = {
                             mainViewModel.deleteDetailRecord()
-                            navController.navigate("DETAIL_RECORD_LIST_SCREEN")
+                            navController.navigate(Routes.MAIN)
                         },
                         modifier = Modifier.padding(16.dp)
                     ) {

@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import muyizii.s.dinecost.viewModels.MainViewModel
 import muyizii.s.dinecost.R
+import muyizii.s.dinecost.Routes
 
 @Composable
 fun UpdateDetailRecordScreen(
@@ -273,7 +274,7 @@ fun UpdateDetailRecordScreen(
                                     newIsIncome = isIncome,
                                     newDetail = detail
                                 )
-                                navController.navigate("DETAIL_RECORD_LIST_SCREEN")
+                                navController.navigate(Routes.MAIN)
                             }
                         }
                     ) {
